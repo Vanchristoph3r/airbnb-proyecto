@@ -1,0 +1,35 @@
+# python files exec
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# dirs
+.DS_Store
+
+# knitr and R markdown default cache directories
+*_cache/
+/cache/
+
+# RStudio Connect folder
+rsconnect/
+
+# pkgdown site
+docs/
+
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+
+# RStudio files
+.Rproj.user/
+
+# History files
+.Rhistory
+.Rapp.history
