@@ -33,3 +33,5 @@ docs/
 # History files
 .Rhistory
 .Rapp.history
+
+.vscode

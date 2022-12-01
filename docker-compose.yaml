@@ -3,14 +3,24 @@ services:
   db:
     image: "postgres"
     environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db:/db
+      - pg_db:/var/lib/postgresql/db
     ports:
       - 5432:5432
-  # web:
-  #   build: ./app
+    networks:
+      - default
   api:
     build: ./backend
+    env_file:
+      - ".env"
     ports: 
       - 8080:80
+    networks:
+      - default
+    depends_on:
+      - db
+volumes:
+  pg_db:

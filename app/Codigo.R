@@ -42,11 +42,16 @@ setwd("E:/Maestria/Airbnb")
 
 
 ###
-listings <- read.csv("listings_cdmx.csv", header=TRUE, stringsAsFactors=FALSE,encoding="UTF-8")
+listings <- read.csv("listings_cdmx_updated.csv", header=TRUE, stringsAsFactors=FALSE,encoding="UTF-8")
 Mapa_cdmx <- st_read("georef-mexico-colonia-millesime.shp", stringsAsFactors=FALSE)
 carpeta <- read.csv("carpeta.csv", header=TRUE, stringsAsFactors=FALSE, encoding="UTF-8")
 listings <- as.data.frame(listings)
 carpeta <- as.data.frame(carpeta)
+
+
+names(Mapa_cdmx)
+
+list_alcaldias_colonias <- Mapa_cdmx %>% select(mun_name, col_name)
 
 
 #####
@@ -106,7 +111,7 @@ summary(base)
 summary (reg1 <- felm (price ~ bedrooms + bathroom + as.factor(room_type) + Delitos| 0| 0 |0,
                        data=base))
 
-summary (reg2 <- felm (price ~  as.factor(host_is_superhost)+ as.factor(instant_bookable)| 0| 0 | 0, 
+summary (reg2 <- felm (price ~  as.factor(host_is_superhost)+ as.factor(instant_bookable) | 0| 0 | 0, 
                        data=base))
 
 
