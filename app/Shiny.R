@@ -11,7 +11,13 @@ ui <- fluidPage(
       # Select Inputs
       selectInput(inputId = "EventFinder",
                   label = "Alcaldia:",
-                  choices = c("Tlalpan", "Santa Fé", "Reforma"),
+                  choices = c("Tlalpan", "Santa Fé", "Reforma"), #Lista de Alcadias
+                  width = "220px"
+      ),
+      
+      selectInput(inputId = "EventFinder",
+                  label = "Colonia:",
+                  choices = c("Tlalpan", "Santa Fé", "Reforma"), #Lista de Colonias
                   width = "220px"
       ),
       
@@ -22,8 +28,7 @@ ui <- fluidPage(
       numericInput("titlesize", "No de Baños:", value = 1, min = 1, max = 50),
       
       #Botones para calculo, actualización y eliminación
-      
-      actionButton("bus_refresh", "Calcular Tarifa"),
+      actionButton("bus_refresh", "Calcular Tarifa"), # "bus_refresh" argumento para acción del boton.
       actionButton("bus_refresh", "Actualizar Tarifa "),
       actionButton("bus_refresh", "Eliminar Tarifa"),
       
@@ -33,7 +38,7 @@ ui <- fluidPage(
     ),
     
     
-    #Panel izquierdo
+    #Panel derecha 
     # Panel central para mostrar todos los resultados
     mainPanel(
       plotOutput("stateMap"),
