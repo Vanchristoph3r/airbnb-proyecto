@@ -22,7 +22,7 @@ ui <- fluidPage(
       ),
       
       radioButtons("radio", label = h5("Tipo de propiedad"), 
-                   choices = list("Casa" = 1, "Departamento" = 0),
+                   choices = list("Casa" = 1, "Departamento" = 0), # El valor 0 , 1 será diferente para la base que se esta montando.
                    selected = 16),
       numericInput("titlesize", "No de Cuartos:", value = 1, min = 1, max = 50),
       numericInput("titlesize", "No de Baños:", value = 1, min = 1, max = 50),
