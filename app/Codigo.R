@@ -41,45 +41,49 @@ pacman::p_load (dplyr
 setwd("E:/Maestria/Airbnb")
 
 
-
-###funciones
-
-stat_box_data <- function(y, upper_limit = max(iris$Sepal.Length) * 1.15) {
-  return( 
-    data.frame(
-      y = 0.95 * upper_limit,
-      label = paste('count =', length(y), '\n',
-                    'mean =', round(mean(y), 1), '\n',
-                    'SD =', round(sd(y), 1), '\n')
-    )
-  )
-}
-
 ###
 listings <- read.csv("listings_cdmx.csv", header=TRUE, stringsAsFactors=FALSE,encoding="UTF-8")
 Mapa_cdmx <- st_read("georef-mexico-colonia-millesime.shp", stringsAsFactors=FALSE)
 carpeta <- read.csv("carpeta.csv", header=TRUE, stringsAsFactors=FALSE, encoding="UTF-8")
-
-#####
-
-names(listings)
-
-airbnb_graph <- ggplot()+
-  geom_sf(data = Mapa_cdmx, fill = NA) +
-  geom_point(data = listings, aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1) +
-  theme_map()
-
-
-carpetas <- ggplot()+
-  geom_sf(data = Mapa_cdmx, fill = NA) +
-  geom_point(data = carpeta, aes(x = longitud, y = latitud), size = 1, 
-             shape = 23, fill = "darkred") +
-  theme_map()
-
 listings <- as.data.frame(listings)
 carpeta <- as.data.frame(carpeta)
 
-summary(listings)
+
+#####
+names(listings)
+airbnb_graph <- ggplot()+
+  geom_sf(data = Mapa_cdmx, fill = NA) +
+  geom_point(data = listings %>% dplyr::filter (mun_name == "" & col_name == ""), aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1) +
+  theme_map()
+
+names(carpeta)
+carpetas <- ggplot()+
+  geom_sf(data = Mapa_cdmx, fill = NA) +
+  geom_point(data = carpeta %>% dplyr::filter (mun_name == "" & col_name == ""), aes(x = longitud, y = latitud), size = 1, 
+             shape = 23, fill = "darkred") +
+  theme_map()
+
+unique(carpeta$categoria_delito)
+Delitos_colonia <- ggplot() + 
+  geom_col(data = carpeta %>% 
+             dplyr::filter (mun_name == "" & col_name == "") %>% 
+             dplyr::group_by(col_name,categoria_delito) %>% 
+             dplyr::summarise(Freq = n()), 
+           aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge") + 
+  coord_flip() +
+  theme(legend.position = "top")
+
+Airbnb_colonia <- ggplot() + 
+  geom_col(data = carpeta %>% 
+             dplyr::filter (mun_name == "" & col_name == "") %>% 
+             dplyr::group_by(col_name,room_type) %>% 
+             dplyr::summarise(Freq = n()), 
+           aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge") + 
+  coord_flip() +
+  theme(legend.position = "top")
+
+
+names(listings)
 summary (reg1 <- felm (price ~ bedrooms + bathroom + as.factor(room_type)| 0| 0 | 0, 
                        data=listings))
 
