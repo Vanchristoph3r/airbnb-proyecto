@@ -10,7 +10,7 @@ ui <- fluidPage(
     sidebarPanel(
       # Select Inputs
       selectInput(inputId = "EventFinder",
-                  label = "Alcaldia en que tienes pensado invertir",
+                  label = "Alcaldia:",
                   choices = c("Tlalpan", "Santa Fé", "Reforma"),
                   width = "220px"
       ),
@@ -18,9 +18,14 @@ ui <- fluidPage(
       radioButtons("radio", label = h5("Tipo de propiedad"), 
                    choices = list("Casa" = 1, "Departamento" = 0),
                    selected = 16),
-      numericInput("low", "Tamaño de la propiedad en m2:", value = 1, min = 0, max = 1000),
       numericInput("titlesize", "No de Cuartos:", value = 1, min = 1, max = 50),
       numericInput("titlesize", "No de Baños:", value = 1, min = 1, max = 50),
+      
+      #Botones para calculo, actualización y eliminación
+      
+      actionButton("bus_refresh", "Calcular Tarifa"),
+      actionButton("bus_refresh", "Actualizar Tarifa "),
+      actionButton("bus_refresh", "Eliminar Tarifa"),
       
       hr(),
       tags$div(class="header", checked=NA,
