@@ -22,5 +22,14 @@ services:
       - default
     depends_on:
       - db
+  app:
+    build: ./app
+    ports:
+      - 3838:3838
+    networks:
+      - default
+    depends_on:
+      - db
+
 volumes:
   pg_db:
