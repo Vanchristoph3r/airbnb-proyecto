@@ -1,6 +1,3 @@
-## llamando a las librerias que (creemos que) vamos a usar
-# if (!require("pacman")) install.packages("pacman")
-
 # pacman::p_load(
 #   dplyr,
 #   haven,
@@ -36,6 +33,7 @@ library(RPostgreSQL)
 library(ggplot2)
 library(sf)
 library(ggthemes)
+library(lfe)
 # READ DATA from databases
 
 dsn_database <- "airbnb"
@@ -69,15 +67,7 @@ mapa_cdmx <- st_read("map/georef-mexico-colonia-millesime.shp", stringsAsFactors
 listings <- as.data.frame(listings)
 carpeta <- as.data.frame(carpeta)
 
-# listings <- read.csv("listings_cdmx_updated.csv", header=TRUE, stringsAsFactors=FALSE,encoding="UTF-8")
-# carpeta <- read.csv("carpeta.csv", header=TRUE, stringsAsFactors=FALSE, encoding="UTF-8")
-
-# names(mapa_cdmx)
-
-#####
-# names(listings)
-
-get_airbnb_default <- function(mun_name, col_name) {
+get_airbnb_default <- function(s) {
   airbnb_graph <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(data = listings, aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1) +
@@ -94,7 +84,6 @@ get_airbnb_map <- function(mun_name, col_name) {
     theme_map()
 }
 
-# names(carpeta)
 get_carpetas_map <- function(mun_name, col_name) {
   carpetas <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
@@ -106,45 +95,51 @@ get_carpetas_map <- function(mun_name, col_name) {
 }
 
 # unique(carpeta$categoria_delito)
-# Delitos_colonia <- ggplot() +
-#   geom_col(
-#     data = carpeta %>%
-#       dplyr::filter(mun_name == "" & col_name == "") %>%
-#       dplyr::group_by(col_name, categoria_delito) %>%
-#       dplyr::summarise(Freq = n()),
-#     aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge"
-#   ) +
-#   coord_flip() +
-#   theme(legend.position = "top")
+get_delitos_colonia_bars <- function(mun_name, col_name) {
+  Delitos_colonia <- ggplot() +
+    geom_col(
+      data = carpeta %>%
+        dplyr::filter(mun_name == mun_name & col_name == col_name) %>%
+        dplyr::group_by(col_name, categoria_delito) %>%
+        dplyr::summarise(Freq = n()),
+      aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge"
+    ) +
+    coord_flip() +
+    theme(legend.position = "top")
+}
 
-# Airbnb_colonia <- ggplot() +
-#   geom_col(
-#     data = carpeta %>%
-#       dplyr::filter(mun_name == "" & col_name == "") %>%
-#       dplyr::group_by(col_name, room_type) %>%
-#       dplyr::summarise(Freq = n()),
-#     aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge"
-#   ) +
-#   coord_flip() +
-#   theme(legend.position = "top")
-
+get_listings_colonia_bars <- function(mun_name, col_name) {
+  Airbnb_colonia <- ggplot() +
+    geom_col(
+      data = listings %>%
+        dplyr::filter(mun_name == mun_name & col_name == col_name) %>%
+        dplyr::group_by(col_name, room_type) %>%
+        dplyr::summarise(Freq = n()),
+      aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge"
+    ) +
+    coord_flip() +
+    theme(legend.position = "top")
+}
 
 # # names(listings)
-# summary(reg1 <- felm(price ~ bedrooms + bathroom + as.factor(room_type) | 0 | 0 | 0,
-#   data = listings
-# ))
+get_summary_listings <- function(bedrooms, bathroom, room_type) {
+  summary(reg1 <- felm(price ~ bedrooms + bathroom + as.factor(room_type) | 0 | 0 | 0,
+    data = listings
+  ))
+}
 
 # # names(carpeta)
 # unique(carpeta$categoria_delito)
 
-# carpetas_colonia <- carpeta %>%
-#   dplyr::filter(categoria_delito == c(
-#     "ROBO A NEGOCIO CON VIOLENCIA",
-#     "ROBO A CASA HABITACIÓN CON VIOLENCIA"
-#   )) %>%
-#   dplyr::group_by(col_code) %>%
-#   dplyr::summarise(Delitos = n())
-
+get_carpetas_colonia_summary <- function() {
+  carpetas_colonia <- carpeta %>%
+    dplyr::filter(categoria_delito == c(
+      "ROBO A NEGOCIO CON VIOLENCIA",
+      "ROBO A CASA HABITACIÓN CON VIOLENCIA"
+    )) %>%
+    dplyr::group_by(col_code) %>%
+    dplyr::summarise(Delitos = n())
+}
 
 
 # # names(listings)

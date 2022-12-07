@@ -2,9 +2,15 @@
 library(dplyr)
 library(tidyverse)
 library(ggplot2)
-source('ai_maps.R')
+library(shinylogs)
+
+source("ai_maps.R")
+source("requests.R")
 
 server <- function(input, output, session) {
+  track_usage(storage_mode = store_null())
+
+
   filedata <- reactive({
     infile <- input$file1
     if (is.null(infile)) {
@@ -74,10 +80,18 @@ server <- function(input, output, session) {
     contentType = "image/png"
   )
 
-  observeEvent(input$save, {
-    url <- sprintf("api:8080/colonias?delegacion=%s", input$delegacionId)
-    resp <- GET("api:8080/colonias?delegacion=", body = toJSON(data.frame(name = input$name, lastname = input$lastname, age = input$age)))
-    df <- fromJSON(content(resp, as = "text"))
-    df
+  observeEvent(ignoreInit=TRUE, input$delegacionId, {
+    delegacion <- input$delegacionId
+    if(delegacion != ''){
+      df <- get_request("colonias", list(delegacion= delegacion))
+      updateSelectInput(session, "coloniaId", label = "Colonia:", choices = as.list(df$colonias))
+    }
+  })
+
+  observeEvent(input$bus_refresh, {
+    output$stateMap <- renderPlot({
+      g1 <- get_airbnb_map(input$delegacionId, input$coloniaId)
+      g1
+    })
   })
 }
