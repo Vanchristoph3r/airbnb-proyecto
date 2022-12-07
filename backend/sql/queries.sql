@@ -9,14 +9,11 @@ FROM
 -- name: get_colonias_by_alcadia
 -- Get colonias by alcadia
 SELECT
-    *
+    distinct(col_name)
 FROM
     listings
 WHERE
-    mun_code = :mun_code AND 
-    property_type like :property_type AND 
-    bathroom = :bathroom AND 
-    bedrooms = :bedrooms;
+    neighbourhood_cleansed_1 like :delegacion ;
 
 
 -- name: get_listings

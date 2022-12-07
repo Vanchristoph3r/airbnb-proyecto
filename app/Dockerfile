@@ -3,14 +3,24 @@ FROM rocker/shiny:4.0.5
 # system libraries
 RUN apt-get update && apt-get install -y \
     libcurl4-gnutls-dev \
-    libssl-dev
+    libssl-dev \
+    libxml2-dev \
+    libpq-dev \
+    libudunits2-dev \
+    libproj-dev \
+    libpq-dev \
+    gdal-bin \
+    libgdal-dev
+
+
   
 
 # install R packages required 
 RUN R -e 'install.packages(c(\
               "shiny", \
               "shinydashboard", \
-              "ggplot2" \
+              "dplyr", "tidyverse", "RPostgreSQL",\
+              "texreg", "sf", "ggthemes"\
             ) \
           )'
 

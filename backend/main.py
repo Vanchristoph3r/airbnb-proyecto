@@ -32,6 +32,19 @@ def get_listings(mun_code: int, property_type: str, bathroom: float, bedrooms: i
         )
         return data
 
+@app.get("/colonias")
+def get_colonias(delegacion: str):
+    with psycopg2.connect(DB_URI, connection_factory=LoggingConnection) as conn:
+        conn.initialize(logger)
+        data = queries.get_colonias_by_alcadia(
+            conn,
+            delegacion=f"%{delegacion.upper()}%",
+        )
+        colonias = []
+        for val in data:
+            colonias.append(val[0])
+        return {"colonias": colonias}
+
 @app.delete("/listings/{id}")
 def delete_listings(id: int):
     with psycopg2.connect(DB_URI, connection_factory=LoggingConnection) as conn:
