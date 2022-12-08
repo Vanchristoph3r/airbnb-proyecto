@@ -43,15 +43,8 @@ server <- function(input, output, session) {
     selectInput("color", "Choose column for color", items)
   })
 
-  output$contents <- renderTable({
-    df <- filedata()
-    return(df)
-  })
-
-
   output$stateMap <- renderPlot({
     df <- filedata()
-    # df_subset <- subset(df, input$bubble > 0) # subsetting not working
     p3 <- get_airbnb_default()
     # p3 <- ggplot() +
     #   geom_polygon(data = "", aes(x = long, y = lat, group = group), color = "white", fill = "grey92") +
@@ -68,6 +61,11 @@ server <- function(input, output, session) {
     #   )
     p3
   })
+
+  output$crimeMap <- renderPlot({
+    p2 <- get_crime_default()
+    p2
+    })
 
   output$downloadPlot <- downloadHandler(
     filename = function() {
@@ -88,10 +86,18 @@ server <- function(input, output, session) {
     }
   })
 
-  observeEvent(input$bus_refresh, {
+  observeEvent(ignoreInit=TRUE, input$estimateNew, {
     output$stateMap <- renderPlot({
-      g1 <- get_airbnb_map(input$delegacionId, input$coloniaId)
-      g1
+      p3 <- get_airbnb_map(input$delegacionId, input$coloniaId)
     })
+    output$crimeMap <- renderPlot({
+      p2 <- get_carpetas_map(input$delegacionId, input$coloniaId)
+    })
+
+    output$contents <- renderTable({
+      df <- get_stimation_listings(input$rooms, input$restrooms, input$room_type)
+      return(df)
+    })
+
   })
 }

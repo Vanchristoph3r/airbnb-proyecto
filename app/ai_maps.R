@@ -67,10 +67,20 @@ mapa_cdmx <- st_read("map/georef-mexico-colonia-millesime.shp", stringsAsFactors
 listings <- as.data.frame(listings)
 carpeta <- as.data.frame(carpeta)
 
-get_airbnb_default <- function(s) {
+get_airbnb_default <- function() {
   airbnb_graph <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(data = listings, aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1) +
+    theme_map()
+}
+
+get_crime_default <- function() {
+  carpetas <- ggplot() +
+    geom_sf(data = mapa_cdmx, fill = NA) +
+    geom_point(
+      data = carpeta, aes(x = longitud, y = latitud), size = 1,
+      shape = 23, fill = "darkred"
+    ) +
     theme_map()
 }
 
@@ -122,10 +132,10 @@ get_listings_colonia_bars <- function(mun_name, col_name) {
 }
 
 # # names(listings)
-get_summary_listings <- function(bedrooms, bathroom, room_type) {
-  summary(reg1 <- felm(price ~ bedrooms + bathroom + as.factor(room_type) | 0 | 0 | 0,
+get_stimation_listings <- function(bedrooms, bathroom, room_type) {
+  as.data.frame(coef(summary(reg1 <- felm(price ~ bedrooms + bathroom + as.factor(room_type) | 0 | 0 | 0,
     data = listings
-  ))
+  ))))
 }
 
 # # names(carpeta)

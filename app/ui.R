@@ -6,7 +6,7 @@ ui <- fluidPage(
   titlePanel("Proyección de renta para plataforma AirBnb"),
   sidebarLayout(
     # Barra derecha para seleccionar inputs
-    sidebarPanel(
+    sidebarPanel(width = "2",
       # Select Inputs
       selectInput(
         inputId = "delegacionId",
@@ -38,22 +38,22 @@ ui <- fluidPage(
         choices = c(), # Lista de Colonias
         width = "220px"
       ),
-      radioButtons("radio",
+      radioButtons("room_type",
         label = h5("Tipo de propiedad"),
         choices = list(
           "Cuarto Privado" = "Private room",
           "Departament o Casa completa" = "Entire home/apt",
           "Cuarto compartido" = "Shared room"
         ), # El valor 0 , 1 será diferente para la base que se esta montando.
-        selected = 0
+        selected = "Private room"
       ),
       numericInput("rooms", "No de Cuartos:", value = 1, min = 1, max = 50),
       numericInput("restrooms", "No de Baños:", value = 1, min = 1, max = 50),
 
       # Botones para calculo, actualización y eliminación
-      actionButton("bus_refresh", "Calcular Tarifa"), # "bus_refresh" argumento para acción del boton.
-      actionButton("bus_refresh", "Actualizar Tarifa "),
-      actionButton("bus_refresh", "Eliminar Tarifa"),
+      actionButton("estimateNew", "Calcular Tarifa"), # "bus_refresh" argumento para acción del boton.
+      actionButton("regresEstimate", "Actualizar Tarifa "),
+      actionButton("deleteEstimate", "Eliminar Tarifa"),
       hr(),
       tags$div(
         class = "header", checked = NA,
@@ -67,7 +67,10 @@ ui <- fluidPage(
     # Panel derecha
     # Panel central para mostrar todos los resultados
     mainPanel(
-      plotOutput("stateMap"),
+      fluidRow(
+        splitLayout(cellWidths = c("50%", "50%"),
+                    plotOutput("stateMap"), plotOutput("crimeMap"))
+      ),
       h4("Gráfica de delitos a casa habitacion en los ultimos años para esa alcaldia seleccionada", align = "left"),
       plotOutput("phonePlot"),
       tableOutput("contents"),
