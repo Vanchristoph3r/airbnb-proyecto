@@ -71,6 +71,7 @@ Definición de POST, PUT, DELETE, GET.
 ```bash
 docker-compose up
 ```
+La aplicación se ejecutara en 127.0.0.1
 
 # Funcionamiento de la aplicación 
 
