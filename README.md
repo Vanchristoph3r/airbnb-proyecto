@@ -21,7 +21,7 @@ La base de datos que se analizará en este trabajo será la de AirBnB CDMX.
 
 Explicación de variables creadas
 
-•	Delitos, son la suma de delitos cometidos. Agrupamos por la caregoría del delito y la colonia donde se cometió.
+•	Delitos, son la suma de delitos que se encuentran en las carpetas de investigacion. Agrupamos por la caregoría del delito y la colonia donde se cometió.
 •	Nombre de la alcaldía, se obtuvo mediante la geoubicación del hospedaje. Lo anterior, cruzando la información de la latitud y longitud con el archivo de polígonos para la Ciudad de México.
 •	Nombre de la colonia, se obtuvo mediante la geoubicación del hospedaje. Lo anterior, cruzando la información de la latitud y longitud con el archivo de polígonos para la Ciudad de México.
 •	Creamos la variable de baños, a través de la conversión de la variable de tipo caracter a continua.
