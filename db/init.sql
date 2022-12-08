@@ -85,6 +85,8 @@ GRANT ALL PRIVILEGES ON TABLE crime_reports TO airbnb_user;
 GRANT ALL PRIVILEGES ON TABLE user_listings TO airbnb_user;
 GRANT USAGE, SELECT ON SEQUENCE user_listings_id_seq TO airbnb_user;
 
+INSERT INTO user_listings (amount, colonia, bedrooms, bathroom)
+VALUES (274.2,'Obrera', 2, 1.5);
 
 COPY listings (id_raw, host_response_time, host_response_rate, host_acceptance_rate, host_is_superhost, host_has_profile_pic, host_identity_verified, NEIGHBOURHOOD_CLEANSED_1, latitude, longitude, property_type, room_type, accommodates, bathroom, bathrooms_text, bedrooms, beds, price, instant_bookable, sta_code, sta_name, mun_code, mun_name, col_code, col_name, col_area_co, col_type)
 FROM

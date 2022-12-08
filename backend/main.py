@@ -25,6 +25,11 @@ queries = aiosql.from_path("./sql/queries.sql", "psycopg2")
 
 @app.get("/listings")
 def get_listings():
+    """Obtiene todos los listings del usario
+
+    Returns:
+        Lista de listings
+    """
     with psycopg2.connect(DB_URI, connection_factory=LoggingConnection) as conn:
         conn.initialize(logger)
         results = queries.get_all_listings(
@@ -44,6 +49,9 @@ def get_listings():
         return json.dumps(data_response)
 
 class Listing(BaseModel):
+    """Definición de objecto de UserListing 
+
+    """
     amount: float
     colonia: str 
     bedrooms: int
@@ -51,6 +59,14 @@ class Listing(BaseModel):
 
 @app.post("/listings")
 def post_listings(listing: List[Listing]):
+    """Crea un listing de usuario
+
+    Args:
+        listing (List[Listing]): Definición del objecto de listing
+
+    Returns:
+        _type_: _description_
+    """
     with psycopg2.connect(DB_URI, connection_factory=LoggingConnection) as conn:
         conn.initialize(logger)
         data = queries.insert_listing(

@@ -1,40 +1,9 @@
-# pacman::p_load(
-#   dplyr,
-#   haven,
-#   ggplot2,
-#   ggpubr,
-#   ggthemes ## si quieren mas themes
-#   , readstata13,
-#   readxl,
-#   sf,
-#   tidyverse,
-#   tidyr,
-#   units,
-#   viridis ## paleta de colores Viridis
-#   , wesanderson ## p/usar paleta de colores de Wes Anderson
-#   , stringr,
-#   RColorBrewer,
-#   patchwork,
-#   Rmisc,
-#   lfe,
-#   stargazer,
-#   AER,
-#   haven,
-#   skimr,
-#   modelsummary,
-#   spdep,
-#   estimatr,
-#   texreg,
-#   RPostgreSQL
-# )
-
 library(tidyverse)
 library(RPostgreSQL)
 library(ggplot2)
 library(sf)
 library(ggthemes)
 library(lfe)
-# READ DATA from databases
 
 dsn_database <- "airbnb"
 dsn_hostname <- "db"
@@ -42,6 +11,8 @@ dsn_port <- "5432"
 dsn_uid <- "airbnb_user"
 dsn_pwd <- ""
 
+# READ DATA FROM DATABASES 
+# Catch if fails
 tryCatch(
   {
     drv <- dbDriver("PostgreSQL")
@@ -93,6 +64,7 @@ get_crime_default <- function() {
     theme_map() + labs(title = "Crimenes en CDMX")
 }
 
+# Maps filtered by  mun_name and col_name
 get_airbnb_map <- function(munname, colname) {
   data_filter <- listings %>% 
                     filter(mun_name == munname) %>%
@@ -103,7 +75,8 @@ get_airbnb_map <- function(munname, colname) {
       data = data_filter,
       aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1
     ) +
-    theme_map()
+    theme_map()+labs(title = "Airbnbs en CDMX",
+        color  = "Tipos de habitación", shape = "Tipos de habitación")
 }
 
 get_carpetas_map <- function(munname, colname) {
@@ -116,16 +89,16 @@ get_carpetas_map <- function(munname, colname) {
       data = data_filter, aes(x = longitud, y = latitud), size = 1,
       shape = 23, fill = "darkred"
     ) +
-    theme_map()
+    theme_map()+ labs(title = "Crimenes en CDMX")
 }
 
-# unique(carpeta$categoria_delito)
-get_delitos_colonia_bars <- function(mun_name, col_name) {
+# Barchars for airbnb and crimes
+get_delitos_colonia_bars <- function(munname, colname) {
   Delitos_colonia <- ggplot() +
     geom_col(
       data = carpeta %>%
-        dplyr::filter(mun_name == mun_name) %>%
-        dplyr::filter(col_name == col_name) %>%
+        dplyr::filter(mun_name == munname) %>%
+        dplyr::filter(col_name == colname) %>%
         dplyr::group_by(col_name, categoria_delito) %>%
         dplyr::summarise(Freq = n()),
       aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge"
@@ -134,19 +107,19 @@ get_delitos_colonia_bars <- function(mun_name, col_name) {
     theme(legend.position = "top")
 }
 
-get_listings_colonia_bars <- function(mun_name, col_name) {
+get_listings_colonia_bars <- function(munname, colname) {
   Airbnb_colonia <- ggplot() +
     geom_col(
       data = listings %>%
-        dplyr::filter(mun_name == mun_name & col_name == col_name) %>%
+        dplyr::filter(mun_name == munname & col_name == colname) %>%
         dplyr::group_by(col_name, room_type) %>%
         dplyr::summarise(Freq = n()),
       aes(x = room_type, y = Freq, fill = room_type), position = "dodge"
     ) +
-    theme(legend.position = "top")
+    theme(legend.position = "top") + labs(fill = "Tipo habitación")
 }
 
-# # names(listings)
+# Estimación de la regresión lineal
 get_stimation_listings <- function(bedroomsName, bathroomName, roomtype, colname) {
   reg1 <- lm(price ~ bedrooms + bathroom + as.factor(room_type) + as.factor(col_name), data = listings)
 
