@@ -19,7 +19,8 @@ RUN R -e 'install.packages(c(\
               "shiny", "httr",\
               "shinydashboard", \
               "dplyr", "tidyverse", "RPostgreSQL",\
-              "texreg", "sf", "ggthemes", "lfe", "shinylogs", "jsonlite"\
+              "texreg", "sf", "ggthemes", "lfe", "shinylogs", \
+              "jsonlite", "DT"\
             ) \
           )'
 

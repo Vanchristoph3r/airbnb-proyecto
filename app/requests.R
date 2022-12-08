@@ -13,18 +13,20 @@ get_request <- function(path, query) {
 
 post_request <- function(path, body) {
     uri <- sprintf(url, path)
-    data <- POST(uri, body = body, encode = "form", verbose())
+    print(body)
+    data <- POST(uri, body = body)
     return(data)
 }
 
 delete_request <- function(path) {
     uri <- sprintf(url, path)
-    data <- DELETE(uri, verbose())
+    data <- DELETE(uri)
     return(data)
 }
 
-put_request <- function(path) {
+put_request <- function(path, body) {
     uri <- sprintf(url, path)
-    data <- PUT(uri, verbose())
+    print(body)
+    data <- PUT(uri, body = body)
     return(data)
 }
