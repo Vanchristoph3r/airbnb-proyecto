@@ -1,9 +1,9 @@
 # Estadística Computacional 
 # Proyecto Airbnb
 ## Integrantes
--	Christopher Chávez Jiménez
--	León
--	José Luis Pérez Castellanos (CU: 159497)
+-	Christopher Chávez Jiménez 
+-	León Felipe Gómez Zarza 
+-	José Luis Pérez Castellanos
 
 ## Resumen
 
@@ -71,7 +71,7 @@ Definición de POST, PUT, DELETE, GET.
 ```bash
 docker-compose up
 ```
-La aplicación se ejecutara en 127.0.0.1
+La aplicación se ejecutara en [localhost](127.0.0.1)
 
 # Funcionamiento de la aplicación 
 
