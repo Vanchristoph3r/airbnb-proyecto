@@ -88,7 +88,7 @@ get_airbnb_map <- function(munname, colname) {
   airbnb_graph <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(
-      data = listings %>% filter(col_name == col_name & mun_name == munname),
+      data = listings %>% filter(col_name == colname),
       aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1
     ) +
     theme_map()
@@ -98,7 +98,7 @@ get_carpetas_map <- function(munname, colname) {
   carpetas <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(
-      data = carpeta %>% dplyr::filter(mun_name == munname & colname == colname), aes(x = longitud, y = latitud), size = 1,
+      data = carpeta %>% filter(col_name == colname), aes(x = longitud, y = latitud), size = 1,
       shape = 23, fill = "darkred"
     ) +
     theme_map()
@@ -132,7 +132,7 @@ get_listings_colonia_bars <- function(mun_name, col_name) {
 
 # # names(listings)
 get_stimation_listings <- function(bedroomsName, bathroomName, roomtype, colname) {
-  reg1 <- lm(price ~ bedrooms + bathroom + as.factor(room_type) + as.factor(col_name), data = base)
+  reg1 <- lm(price ~ bedrooms + bathroom + as.factor(room_type) + as.factor(col_name), data = listings)
 
   predict_value_poly <- predict(reg1, data.frame(
     bedrooms = bedroomsName,
@@ -142,46 +142,3 @@ get_stimation_listings <- function(bedroomsName, bathroomName, roomtype, colname
   ))
   predict_value_poly
 }
-
-# # names(carpeta)
-# unique(carpeta$categoria_delito)
-
-get_carpetas_colonia_summary <- function() {
-  carpetas_colonia <- carpeta %>%
-    dplyr::filter(categoria_delito == c(
-      "ROBO A NEGOCIO CON VIOLENCIA",
-      "ROBO A CASA HABITACIÓN CON VIOLENCIA"
-    )) %>%
-    dplyr::group_by(col_code) %>%
-    dplyr::summarise(Delitos = n())
-}
-
-
-# # names(listings)
-# base <- dplyr::left_join(listings, carpetas_colonia,
-#   by = c("col_code" = "col_code")
-# )
-
-# summary(base)
-# summary(reg1 <- felm(price ~ bedrooms + bathroom + as.factor(room_type) + Delitos | 0 | 0 | 0,
-#   data = base
-# ))
-
-# summary(reg2 <- felm(price ~ as.factor(host_is_superhost) + as.factor(instant_bookable) | 0 | 0 | 0,
-#   data = base
-# ))
-
-# --------
-#### mapas
-
-#### densidad de acuerdo a alcaldia
-
-#### piensas invertir en una propiedad para rentarla por airbnb
-# en que alcaldia tienes pensado invertir?
-
-### casa o departamento
-
-# numero de cuartos
-# numero de banos
-
-#### muestro grafica de delitos a casa habitacion en los ultimos anos para esa alcaldia

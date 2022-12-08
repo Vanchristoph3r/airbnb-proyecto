@@ -95,6 +95,7 @@ server <- function(input, output, session) {
     })
     output$crimeMap <- renderPlot({
       p2 <- get_carpetas_map(input$delegacionId, input$coloniaId)
+      p2
     })
 
     output$barCharListings <- renderPlot({
@@ -107,7 +108,7 @@ server <- function(input, output, session) {
       p4
     })
 
-    output$stimation <- renderTable({
+    output$stimation <- renderText({
       df <- get_stimation_listings(input$rooms, input$restrooms, input$room_type, input$coloniaId)
       return(df)
     })
