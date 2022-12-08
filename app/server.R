@@ -2,9 +2,15 @@
 library(dplyr)
 library(tidyverse)
 library(ggplot2)
-source('ai_maps.R')
+library(shinylogs)
+
+source("ai_maps.R")
+source("requests.R")
 
 server <- function(input, output, session) {
+  track_usage(storage_mode = store_null())
+
+
   filedata <- reactive({
     infile <- input$file1
     if (is.null(infile)) {
@@ -37,15 +43,8 @@ server <- function(input, output, session) {
     selectInput("color", "Choose column for color", items)
   })
 
-  output$contents <- renderTable({
-    df <- filedata()
-    return(df)
-  })
-
-
   output$stateMap <- renderPlot({
     df <- filedata()
-    # df_subset <- subset(df, input$bubble > 0) # subsetting not working
     p3 <- get_airbnb_default()
     # p3 <- ggplot() +
     #   geom_polygon(data = "", aes(x = long, y = lat, group = group), color = "white", fill = "grey92") +
@@ -63,6 +62,11 @@ server <- function(input, output, session) {
     p3
   })
 
+  output$crimeMap <- renderPlot({
+    p2 <- get_crime_default()
+    p2
+    })
+
   output$downloadPlot <- downloadHandler(
     filename = function() {
       paste("map-", Sys.Date(), ".png", sep = "")
@@ -74,10 +78,40 @@ server <- function(input, output, session) {
     contentType = "image/png"
   )
 
-  observeEvent(input$save, {
-    url <- sprintf("api:8080/colonias?delegacion=%s", input$delegacionId)
-    resp <- GET("api:8080/colonias?delegacion=", body = toJSON(data.frame(name = input$name, lastname = input$lastname, age = input$age)))
-    df <- fromJSON(content(resp, as = "text"))
-    df
+  observeEvent(ignoreInit=TRUE, input$delegacionId, {
+    delegacion <- input$delegacionId
+    if(delegacion != ''){
+      df <- get_request("colonias", list(delegacion= delegacion))
+      updateSelectInput(session, "coloniaId", label = "Colonia:", choices = as.list(df$colonias))
+    }
+  })
+
+  observeEvent(ignoreInit=TRUE, input$estimateNew, {
+    output$stateMap <- renderPlot({
+      mun_name <- input$delegacionId
+      col_name <- input$coloniaId
+      p3 <- get_airbnb_map(mun_name, col_name)
+      p3
+    })
+    output$crimeMap <- renderPlot({
+      p2 <- get_carpetas_map(input$delegacionId, input$coloniaId)
+      p2
+    })
+
+    output$barCharListings <- renderPlot({
+      p4 <- get_listings_colonia_bars(input$delegacionId, input$coloniaId)
+      p4
+    })
+
+    output$barCrime <- renderPlot({
+      p4 <- get_delitos_colonia_bars(input$delegacionId, input$coloniaId)
+      p4
+    })
+
+    output$stimation <- renderText({
+      df <- get_stimation_listings(input$rooms, input$restrooms, input$room_type, input$coloniaId)
+      return(df)
+    })
+
   })
 }
