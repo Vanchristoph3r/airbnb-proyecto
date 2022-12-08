@@ -84,21 +84,21 @@ get_crime_default <- function() {
     theme_map()
 }
 
-get_airbnb_map <- function(mun_name, col_name) {
+get_airbnb_map <- function(munname, colname) {
   airbnb_graph <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(
-      data = listings %>% dplyr::filter(mun_name == mun_name & col_name == col_name),
+      data = listings %>% filter(col_name == col_name & mun_name == munname),
       aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1
     ) +
     theme_map()
 }
 
-get_carpetas_map <- function(mun_name, col_name) {
+get_carpetas_map <- function(munname, colname) {
   carpetas <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(
-      data = carpeta %>% dplyr::filter(mun_name == mun_name & col_name == col_name), aes(x = longitud, y = latitud), size = 1,
+      data = carpeta %>% dplyr::filter(mun_name == munname & colname == colname), aes(x = longitud, y = latitud), size = 1,
       shape = 23, fill = "darkred"
     ) +
     theme_map()
@@ -125,17 +125,22 @@ get_listings_colonia_bars <- function(mun_name, col_name) {
         dplyr::filter(mun_name == mun_name & col_name == col_name) %>%
         dplyr::group_by(col_name, room_type) %>%
         dplyr::summarise(Freq = n()),
-      aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge"
+      aes(x = room_type, y = Freq, fill = room_type), position = "dodge"
     ) +
-    coord_flip() +
     theme(legend.position = "top")
 }
 
 # # names(listings)
-get_stimation_listings <- function(bedrooms, bathroom, room_type) {
-  as.data.frame(coef(summary(reg1 <- felm(price ~ bedrooms + bathroom + as.factor(room_type) | 0 | 0 | 0,
-    data = listings
-  ))))
+get_stimation_listings <- function(bedroomsName, bathroomName, roomtype, colname) {
+  reg1 <- lm(price ~ bedrooms + bathroom + as.factor(room_type) + as.factor(col_name), data = base)
+
+  predict_value_poly <- predict(reg1, data.frame(
+    bedrooms = bedroomsName,
+    bathroom = bathroomName,
+    room_type = roomtype,
+    col_name = colname
+  ))
+  predict_value_poly
 }
 
 # # names(carpeta)

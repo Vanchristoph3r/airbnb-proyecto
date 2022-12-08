@@ -88,14 +88,27 @@ server <- function(input, output, session) {
 
   observeEvent(ignoreInit=TRUE, input$estimateNew, {
     output$stateMap <- renderPlot({
-      p3 <- get_airbnb_map(input$delegacionId, input$coloniaId)
+      mun_name <- input$delegacionId
+      col_name <- input$coloniaId
+      p3 <- get_airbnb_map(mun_name, col_name)
+      p3
     })
     output$crimeMap <- renderPlot({
       p2 <- get_carpetas_map(input$delegacionId, input$coloniaId)
     })
 
-    output$contents <- renderTable({
-      df <- get_stimation_listings(input$rooms, input$restrooms, input$room_type)
+    output$barCharListings <- renderPlot({
+      p4 <- get_listings_colonia_bars(input$delegacionId, input$coloniaId)
+      p4
+    })
+
+    output$barCrime <- renderPlot({
+      p4 <- get_delitos_colonia_bars(input$delegacionId, input$coloniaId)
+      p4
+    })
+
+    output$stimation <- renderTable({
+      df <- get_stimation_listings(input$rooms, input$restrooms, input$room_type, input$coloniaId)
       return(df)
     })
 

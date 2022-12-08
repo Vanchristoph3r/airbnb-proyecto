@@ -72,16 +72,12 @@ ui <- fluidPage(
                     plotOutput("stateMap"), plotOutput("crimeMap"))
       ),
       h4("Gráfica de delitos a casa habitacion en los ultimos años para esa alcaldia seleccionada", align = "left"),
-      plotOutput("phonePlot"),
-      tableOutput("contents"),
-      h4("Observations"),
-      tableOutput("view"),
-      renderPlot({
-        # plot(
-        #   x = selected_trends()$date, y = selected_trends()$close, type = "l",
-        #   xlab = "Date", ylab = "Trend index"
-        # )
-      })
+      fluidRow(
+        splitLayout(cellWidths = c("50%", "50%"),
+                    plotOutput("barCharListings"), plotOutput("barCrime"))
+      ),
+      h4("Estimación"),
+      textOutput("stimation"),
     )
   )
 )
