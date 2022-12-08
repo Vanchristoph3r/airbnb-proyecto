@@ -67,11 +67,20 @@ mapa_cdmx <- st_read("map/georef-mexico-colonia-millesime.shp", stringsAsFactors
 listings <- as.data.frame(listings)
 carpeta <- as.data.frame(carpeta)
 
+get_size_df <- function(munname, colname){
+  data_filter <- listings %>% 
+                    filter(mun_name == munname) %>%
+                    filter(col_name == colname)
+  sizeDF <- nrow(data_filter)
+  return(sizeDF)
+}
+
 get_airbnb_default <- function() {
   airbnb_graph <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(data = listings, aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1) +
-    theme_map()
+    theme_map()+labs(title = "Airbnbs en CDMX",
+        color  = "Tipos de habitación", shape = "Tipos de habitación")
 }
 
 get_crime_default <- function() {
@@ -81,24 +90,30 @@ get_crime_default <- function() {
       data = carpeta, aes(x = longitud, y = latitud), size = 1,
       shape = 23, fill = "darkred"
     ) +
-    theme_map()
+    theme_map() + labs(title = "Crimenes en CDMX")
 }
 
 get_airbnb_map <- function(munname, colname) {
+  data_filter <- listings %>% 
+                    filter(mun_name == munname) %>%
+                    filter(col_name == colname)
   airbnb_graph <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(
-      data = listings %>% filter(col_name == colname),
+      data = data_filter,
       aes(x = longitude, y = latitude, shape = room_type, color = room_type), size = 1
     ) +
     theme_map()
 }
 
 get_carpetas_map <- function(munname, colname) {
+  data_filter <- carpeta %>% 
+                    filter(mun_name == munname) %>%
+                    filter(col_name == colname)
   carpetas <- ggplot() +
     geom_sf(data = mapa_cdmx, fill = NA) +
     geom_point(
-      data = carpeta %>% filter(col_name == colname), aes(x = longitud, y = latitud), size = 1,
+      data = data_filter, aes(x = longitud, y = latitud), size = 1,
       shape = 23, fill = "darkred"
     ) +
     theme_map()
@@ -109,7 +124,8 @@ get_delitos_colonia_bars <- function(mun_name, col_name) {
   Delitos_colonia <- ggplot() +
     geom_col(
       data = carpeta %>%
-        dplyr::filter(mun_name == mun_name & col_name == col_name) %>%
+        dplyr::filter(mun_name == mun_name) %>%
+        dplyr::filter(col_name == col_name) %>%
         dplyr::group_by(col_name, categoria_delito) %>%
         dplyr::summarise(Freq = n()),
       aes(x = categoria_delito, y = Freq, fill = categoria_delito), position = "dodge"

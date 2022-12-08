@@ -52,8 +52,9 @@ ui <- fluidPage(
 
       # Botones para calculo, actualización y eliminación
       actionButton("estimateNew", "Calcular Tarifa"), # "bus_refresh" argumento para acción del boton.
-      actionButton("regresEstimate", "Actualizar Tarifa "),
+      actionButton("updateEstimate", "Actualizar Tarifa"),
       actionButton("deleteEstimate", "Eliminar Tarifa"),
+      actionButton("saveEstimate", "Guardar Tarifa"),
       hr(),
       tags$div(
         class = "header", checked = NA,
@@ -69,15 +70,17 @@ ui <- fluidPage(
     mainPanel(
       fluidRow(
         splitLayout(cellWidths = c("50%", "50%"),
-                    plotOutput("stateMap"), plotOutput("crimeMap"))
+                    plotOutput("stateMap", height = "500px"), plotOutput("crimeMap", height = "500px"))
       ),
       h4("Gráfica de delitos a casa habitacion en los ultimos años para esa alcaldia seleccionada", align = "left"),
       fluidRow(
         splitLayout(cellWidths = c("50%", "50%"),
                     plotOutput("barCharListings"), plotOutput("barCrime"))
       ),
-      h4("Estimación"),
-      textOutput("stimation"),
+       fluidRow(
+        column(9,h4("Estimaciones anteriores"), DT::dataTableOutput('listings')),
+        column(3, verbatimTextOutput('estimate'))
+      ),
     )
   )
 )
